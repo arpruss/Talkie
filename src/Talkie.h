@@ -92,6 +92,7 @@ public:
     void doNotUseNonInvertedOutput(bool aDoNotUseNonInvertedOutput = true);
     void digitalWriteInvertedOutput(uint8_t aValue);
     void digitalWriteNonInvertedOutput(uint8_t aValue);
+    void setBoost(int16_t boostValue = 1);
 
     // Output pins to use. 0xFF -> Enable output (default). 0 -> Disable output.
     uint8_t NonInvertedOutputPin; // Pin number of output, maybe fixed for some boards. On Arduino enables pin 3 (Talkie default) as PWM output. 0xFF -> Enable output (default). 0 -> Disable output.
@@ -108,6 +109,7 @@ public:
     const uint8_t* FIFOPopFront(); // only sayISR() calls this
 
     volatile uint8_t free; // init on setup = FIFO_BUFFER_SIZE
+    uint16_t boost = 1;
 
 private:
     // FIFO queue for sayQ

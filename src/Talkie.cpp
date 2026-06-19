@@ -706,6 +706,13 @@ void Talkie::resetFIFO() {
 }
 
 /*
+ * Sets a multiplicative volume boost, at the expense of clipping
+ */
+void Talkie::setBoost(int16_t boostValue) {
+    boost = boostValue;
+}
+
+/*
  * On Arduino disables/enables pin 11 as inverted PWM output ( in order to increase the volume, if speaker is attached between 3 and 11)
  */
 void Talkie::doNotUseInvertedOutput(bool aDoNotUseInvertedOutput) {
@@ -833,6 +840,7 @@ void timerInterrupt() {
     /*
      * First output the value
      */
+     
 #if defined(PWM_VALUE_DESTINATION)
     PWM_VALUE_DESTINATION = nextPwm;
 #endif
@@ -925,6 +933,13 @@ void timerInterrupt() {
 #endif
 
     x0 = u0; // 10 bit value -512 to +511
+    if (sPointerToTalkieForISR->boost != 1) {
+        u0 = u0 * sPointerToTalkieForISR->boost;
+        if (u0 > 511)
+            u0 = 511;
+        else if (u0 < -512)
+            u0 = 512;
+    }
 
 #if defined(_10_BIT_OUTPUT)
     nextPwm = (u0) + 0x200;
